@@ -71,7 +71,7 @@ proxy-groups:
       - CNIX
 
 rule-providers:
-  🛑 广告拦截:
+  reject:
     type: http
     behavior: domain
     url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt"
@@ -85,42 +85,42 @@ rule-providers:
     path: ./ruleset/icloud.yaml
     interval: 36000
 
-  🍎 苹果服务:
+  apple:
     type: http
     behavior: domain
     url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt"
     path: ./ruleset/apple.yaml
     interval: 36000
 
-  📢 谷歌服务:
+  google:
     type: http
     behavior: domain
     url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt"
     path: ./ruleset/google.yaml
     interval: 36000
 
-  🌏 代理:
+  proxy:
     type: http
     behavior: domain
     url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt"
     path: ./ruleset/proxy.yaml
     interval: 36000
 
-  🎯 全球直连:
+  direct:
     type: http
     behavior: domain
     url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt"
     path: ./ruleset/direct.yaml
     interval: 36000
 
-  🌏 国内服务:
+  cncidr:
     type: http
     behavior: ipcidr
     url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt"
     path: ./ruleset/cncidr.yaml
     interval: 36000
 
-  🛡️ 局域网IP:
+  lancidr:
     type: http
     behavior: ipcidr
     url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt"
@@ -165,4 +165,4 @@ rules:
   - RULE-SET,direct,DIRECT
   - GEOIP,,DIRECT,no-resolve
   - GEOIP,CN,DIRECT,no-resolve
-  - MATCH,PROXY
+  - MATCH,🐟 漏网之鱼
