@@ -1,10 +1,3 @@
-proxy-providers:
-  CNIX:
-    type: https
-    url: "https://sub.fnf.xyz/link/jRwqSMzS85G677bl?sub=3&extend=1"
-    path: ./cnix.yaml
-    interval: 7200
-
 # HTTP 代理端口
 port: 7890
 
@@ -88,6 +81,13 @@ tun:
     - 8.8.4.4
     - 1.1.1.1
     - 1.0.0.1
+
+proxy-providers:
+  CNIX:
+    type: http
+    url: "https://sub.fnf.xyz/link/3fFVZWB5qSArBT7a?sub=3&extend=1"
+    interval: 7200
+    path: ./CNIX.yaml
 
 proxy-groups:
   - name: PROXY
