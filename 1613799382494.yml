@@ -1,9 +1,15 @@
 proxy-providers:
   CNIX:
     type: http
-    url: "这里需要替换为你的订阅链接，请保留双引号和双引号前面的空格"
+    url: "https://sub.fnf.xyz/link/3fFVZWB5qSArBT7a?clash=1"
     path: ./cnix.yaml
     interval: 7200
+    health-check:
+    enable: true
+    interval: 600
+    # lazy: true
+    url: http://www.gstatic.com/generate_204
+    
 mixed-port: 7890
 allow-lan: false
 mode: rule
@@ -63,7 +69,7 @@ proxy-groups:
       - CNIX
 
 rule-providers:
-  reject:
+  🛑 广告拦截:
     type: http
     behavior: domain
     url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt"
@@ -77,42 +83,42 @@ rule-providers:
     path: ./ruleset/icloud.yaml
     interval: 36000
 
-  apple:
+  🍎 苹果服务:
     type: http
     behavior: domain
     url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt"
     path: ./ruleset/apple.yaml
     interval: 36000
 
-  google:
+  📢 谷歌服务:
     type: http
     behavior: domain
     url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt"
     path: ./ruleset/google.yaml
     interval: 36000
 
-  proxy:
+  🌏 代理:
     type: http
     behavior: domain
     url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt"
     path: ./ruleset/proxy.yaml
     interval: 36000
 
-  direct:
+  🎯 全球直连:
     type: http
     behavior: domain
     url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt"
     path: ./ruleset/direct.yaml
     interval: 36000
 
-  cncidr:
+  🌏 国内服务:
     type: http
     behavior: ipcidr
     url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt"
     path: ./ruleset/cncidr.yaml
     interval: 36000
 
-  lancidr:
+  🛡️ 局域网IP:
     type: http
     behavior: ipcidr
     url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt"
