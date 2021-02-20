@@ -172,4 +172,4 @@ rules:
   - RULE-SET,direct,DIRECT
   - GEOIP,,DIRECT,no-resolve
   - GEOIP,CN,DIRECT,no-resolve
-  - MATCH,🐟 漏网之鱼
+  - MATCH,PROXY
