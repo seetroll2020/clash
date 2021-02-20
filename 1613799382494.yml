@@ -76,13 +76,6 @@ proxy-groups:
     tolerance: 50
     use:
       - CNIX
-  - name: 🚀 节点选择
-    type: select
-    proxies:
-      - ♻️ 自动选择
-      - DIRECT
-      use:
-        - CNIX
     
 rule-providers:
   reject:
