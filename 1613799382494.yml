@@ -65,6 +65,13 @@ proxy-groups:
     proxies:
       - CNIX
       - DIRECT
+  - name: 🚀 节点选择
+    type: select
+    proxies:
+      - ♻️ 自动选择
+      - DIRECT
+      use:
+      - CNIX
   - name: CNIX
     type: select
     use:
