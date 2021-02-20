@@ -1,6 +1,6 @@
 proxy-providers:
   CNIX:
-    type: http
+    type: https
     url: "https://sub.fnf.xyz/link/jRwqSMzS85G677bl?sub=3&extend=1"
     path: ./cnix.yaml
     interval: 7200
