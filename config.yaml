@@ -1,6 +1,5 @@
 # HTTP 代理端口
-
- port: 7890
+ mixed-port: 7890
  
 # SOCKS5 代理端口
  socks-port: 7891
