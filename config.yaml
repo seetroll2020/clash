@@ -32,7 +32,7 @@
 # secret: ""
 
 # DNS 设置
-dns:
+DNS:
   enable: false
   listen: 0.0.0.0:53
   ipv6: false
