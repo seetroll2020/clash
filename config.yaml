@@ -1,8 +1,200 @@
-mixed-port: 7890
+proxy-providers:
+  CNIX:
+    type: http
+    url: "这里需要替换为你的订阅链接，请保留双引号和双引号前面的空格"
+    path: ./cnix.yaml
+    interval: 7200
+
+# HTTP 代理端口
+port: 7890
+
+# SOCKS5 代理端口
+socks-port: 7891
+
+# Linux 和 macOS 的 redir 代理端口 (如需使用此功能，请取消注释)
+# redir-port: 7892
+
+# 允许局域网的连接（可用来共享代理）
 allow-lan: false
-external-controller: 127.0.0.1:54160
-secret: ''
-[custom]
+
+# 规则模式：Global（全局代理）/ Rule（规则） / Script(腳本) / Direct（全局直连）
+mode: Rule
+
+# 设置日志输出级别 (默认级别：silent，即不输出任何内容，以避免因日志内容过大而导致程序内存溢出）。
+# 5 个级别：silent / info / warning / error / debug。级别越高日志输出量越大，越倾向于调试，若需要请自行开启。
+log-level: info
+
+ipv6: false
+
+# clash 的 RESTful API
+external-controller: '127.0.0.1:9090'
+
+
+# 您可以将静态网页资源（如 clash-dashboard）放置在一个目录中，clash 将会服务于 `${API}/ui`
+# 参数应填写配置目录的相对路径或绝对路径。
+# external-ui: folder
+
+# RESTful API 的口令 (可选)
+# secret: ""
+
+# DNS 设置
+
+dns:
+ enable: true
+ ipv6: false
+ listen: 0.0.0.0:53
+ enhanced-mode: redir-host
+ default-nameserver:
+    - 114.114.114.114
+ nameserver:
+  - tls://223.5.5.5:853
+  - 8.8.8.8
+  - 1.1.1.1
+  - 119.29.29.29
+  - 223.5.5.5
+  - 180.76.76.76
+  - https://rubyfish.cn/dns-quer
+ fallback:
+  - https://cloudflare-dns.com/dns-query
+  - tls://1.0.0.1:853
+  - https://dns.google/dns-query#
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter:
+    - '*.lan'
+    - '*.localdomain'
+    - '*.example'
+    - '*.invalid'
+    - '*.localhost'
+    - '*.test'
+    - '*.local'
+    - '*.home.arpa'
+    - router.asus.com
+    - localhost.sec.qq.com
+    - localhost.ptlogin2.qq.com
+    - '+.msftconnecttest.com'
+tun:
+  enable: true
+  stack: system
+  macOS-auto-route: true
+  macOS-auto-detect-interface: true
+  dns-hijack:
+    - 114.114.114.114
+    - 180.76.76.76
+    - 119.29.29.29
+    - 223.5.5.5
+    - 8.8.8.8
+    - 8.8.4.4
+    - 1.1.1.1
+    - 1.0.0.1
+
+proxy-groups:
+  - name: PROXY
+    type: select
+    proxies:
+      - CNIX
+      - DIRECT
+  - name: CNIX
+    type: select
+    use:
+      - CNIX
+
+rule-providers:
+  reject:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt"
+    path: ./ruleset/reject.yaml
+    interval: 36000
+
+  icloud:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/icloud.txt"
+    path: ./ruleset/icloud.yaml
+    interval: 36000
+
+  apple:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt"
+    path: ./ruleset/apple.yaml
+    interval: 36000
+
+  google:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt"
+    path: ./ruleset/google.yaml
+    interval: 36000
+
+  proxy:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt"
+    path: ./ruleset/proxy.yaml
+    interval: 36000
+
+  direct:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt"
+    path: ./ruleset/direct.yaml
+    interval: 36000
+
+  cncidr:
+    type: http
+    behavior: ipcidr
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/cncidr.txt"
+    path: ./ruleset/cncidr.yaml
+    interval: 36000
+
+  lancidr:
+    type: http
+    behavior: ipcidr
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/lancidr.txt"
+    path: ./ruleset/lancidr.yaml
+    interval: 36000
+
+rules:
+  - PROCESS-NAME,clash,DIRECT
+  - PROCESS-NAME,clash-darwin,DIRECT
+  - PROCESS-NAME,clash-windows,DIRECT
+  - PROCESS-NAME,clash-linux,DIRECT
+  - PROCESS-NAME,surge,DIRECT
+  - PROCESS-NAME,surge%203,DIRECT
+  - PROCESS-NAME,v2ray,DIRECT
+  - PROCESS-NAME,xray,DIRECT
+  - PROCESS-NAME,ss-local,DIRECT
+  - PROCESS-NAME,privoxy,DIRECT
+  - PROCESS-NAME,trojan,DIRECT
+  - PROCESS-NAME,trojan-go,DIRECT
+  - PROCESS-NAME,naive,DIRECT
+  - PROCESS-NAME,Thunder,DIRECT
+  - PROCESS-NAME,thunder.exe,DIRECT
+  - PROCESS-NAME,DownloadService,DIRECT
+  - PROCESS-NAME,qbittorrent,DIRECT
+  - PROCESS-NAME,qBittorrent,DIRECT
+  - PROCESS-NAME,Transmission,DIRECT
+  - PROCESS-NAME,fdm,DIRECT
+  - PROCESS-NAME,aria2c,DIRECT
+  - PROCESS-NAME,Folx,DIRECT
+  - PROCESS-NAME,NetTransport,DIRECT
+  - PROCESS-NAME,uTorrent,DIRECT
+  - PROCESS-NAME,WebTorrent,DIRECT
+  - DOMAIN,clash.razord.top,DIRECT
+  - DOMAIN,yacd.haishan.me,DIRECT
+  - RULE-SET,reject,REJECT
+  - DOMAIN,www.icloud.com,PROXY
+  - DOMAIN-SUFFIX,icloud-content.com,PROXY
+  - RULE-SET,icloud,DIRECT
+  - RULE-SET,apple,PROXY
+  - RULE-SET,google,PROXY
+  - RULE-SET,proxy,PROXY
+  - RULE-SET,direct,DIRECT
+  - GEOIP,,DIRECT,no-resolve
+  - GEOIP,CN,DIRECT,no-resolve
+  - MATCH,PROXY
 
 ;设置规则标志位
 ruleset=🎯 全球直连,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/LocalAreaNetwork.list
@@ -40,34 +232,26 @@ ruleset=🐟 漏网之鱼,[]FINAL
 ;设置规则标志位
 
 ;设置分组标志位
-custom_proxy_group=🚀 节点选择`select`[]♻️ 自动选择`[]🔯 故障转移`[]🔮 负载均衡`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇸🇬 狮城节点`[]🇯🇵 日本节点`[]🇺🇲 美国节点`[]🇰🇷 韩国节点`[]🚀 手动切换`[]DIRECT
-custom_proxy_group=🚀 手动切换`select`.*
+custom_proxy_group=🚀 节点选择`select`[]♻️ 自动选择`[]🔯 故障转移`[]🔮 负载均衡`[]🚀 手动切换`[]DIRECT
 custom_proxy_group=♻️ 自动选择`url-test`.*`http://www.gstatic.com/generate_204`300,,50
 custom_proxy_group=🔯 故障转移`fallback`.*`http://www.gstatic.com/generate_204`300,,50
 custom_proxy_group=🔮 负载均衡`load-balance`.*`http://www.gstatic.com/generate_204`300,,50
-custom_proxy_group=📲 电报消息`select`[]🚀 节点选择`[]♻️ 自动选择`[]🇸🇬 狮城节点`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇯🇵 日本节点`[]🇺🇲 美国节点`[]🇰🇷 韩国节点`[]🚀 手动切换`[]DIRECT
-custom_proxy_group=📹 油管视频`select`[]🚀 节点选择`[]♻️ 自动选择`[]🇸🇬 狮城节点`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇯🇵 日本节点`[]🇺🇲 美国节点`[]🇰🇷 韩国节点`[]🚀 手动切换`[]DIRECT
-custom_proxy_group=🎥 奈飞视频`select`[]🎥 奈飞节点`[]🚀 节点选择`[]♻️ 自动选择`[]🇸🇬 狮城节点`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇯🇵 日本节点`[]🇺🇲 美国节点`[]🇰🇷 韩国节点`[]🚀 手动切换`[]DIRECT
+custom_proxy_group=📲 电报消息`select`[]🚀 节点选择`[]♻️ 自动选择`[]🚀 手动切换`[]DIRECT
+custom_proxy_group=📹 油管视频`select`[]🚀 节点选择`[]♻️ 自动选择`[]🚀 手动切换`[]DIRECT
+custom_proxy_group=🎥 奈飞视频`select`[]🚀 节点选择`[]♻️ 自动选择`[]🚀 手动切换`[]DIRECT
 custom_proxy_group=📺 哔哩哔哩`select`[]🎯 全球直连`[]🇨🇳 台湾节点`[]🇭🇰 香港节点
-custom_proxy_group=🌍 国外媒体`select`[]🚀 节点选择`[]♻️ 自动选择`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇸🇬 狮城节点`[]🇯🇵 日本节点`[]🇺🇲 美国节点`[]🇰🇷 韩国节点`[]🚀 手动切换`[]DIRECT
-custom_proxy_group=🌏 国内媒体`select`[]DIRECT`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇸🇬 狮城节点`[]🇯🇵 日本节点`[]🚀 手动切换
-custom_proxy_group=📢 谷歌FCM`select`[]DIRECT`[]🚀 节点选择`[]🇺🇲 美国节点`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇸🇬 狮城节点`[]🇯🇵 日本节点`[]🇰🇷 韩国节点`[]🚀 手动切换
-custom_proxy_group=Ⓜ️ 微软云盘`select`[]DIRECT`[]🚀 节点选择`[]🇺🇲 美国节点`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇸🇬 狮城节点`[]🇯🇵 日本节点`[]🇰🇷 韩国节点`[]🚀 手动切换
-custom_proxy_group=🍎 苹果服务`select`[]DIRECT`[]🚀 节点选择`[]🇺🇲 美国节点`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇸🇬 狮城节点`[]🇯🇵 日本节点`[]🇰🇷 韩国节点`[]🚀 手动切换
-custom_proxy_group=🎮 游戏平台`select`[]DIRECT`[]🚀 节点选择`[]🇺🇲 美国节点`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇸🇬 狮城节点`[]🇯🇵 日本节点`[]🇰🇷 韩国节点`[]🚀 手动切换
+custom_proxy_group=🌍 国外媒体`select`[]🚀 节点选择`[]♻️ 自动选择`[]🚀 手动切换`[]DIRECT
+custom_proxy_group=🌏 国内媒体`select`[]DIRECT`[]🚀 手动切换
+custom_proxy_group=📢 谷歌FCM`select`[]DIRECT`[]🚀 节点选择`[]🚀 手动切换
+custom_proxy_group=Ⓜ️ 微软云盘`select`[]DIRECT`[]🚀 节点选择`[]🚀 手动切换
+custom_proxy_group=🍎 苹果服务`select`[]DIRECT`[]🚀 节点选择`[]🚀 手动切换
+custom_proxy_group=🎮 游戏平台`select`[]DIRECT`[]🚀 节点选择`[]🚀 手动切换
 custom_proxy_group=🎯 全球直连`select`[]DIRECT`[]🚀 节点选择`[]♻️ 自动选择
 custom_proxy_group=🛑 广告拦截`select`[]REJECT`[]DIRECT
 custom_proxy_group=🍃 应用净化`select`[]REJECT`[]DIRECT
 custom_proxy_group=🆎 AdBlock`select`[]REJECT`[]DIRECT
 custom_proxy_group=🛡️ 隐私防护`select`[]REJECT`[]DIRECT
-custom_proxy_group=🐟 漏网之鱼`select`[]🚀 节点选择`[]♻️ 自动选择`[]DIRECT`[]🇭🇰 香港节点`[]🇨🇳 台湾节点`[]🇸🇬 狮城节点`[]🇯🇵 日本节点`[]🇺🇲 美国节点`[]🇰🇷 韩国节点`[]🚀 手动切换
-custom_proxy_group=🇭🇰 香港节点`select`(港|HK|Hong Kong)
-custom_proxy_group=🇯🇵 日本节点`select`(日本|川日|东京|大阪|泉日|埼玉|沪日|深日|[^-]日|JP|Japan)
-custom_proxy_group=🇺🇲 美国节点`select`(美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|US|United States)
-custom_proxy_group=🇨🇳 台湾节点`select`(台|新北|彰化|TW|Taiwan)
-custom_proxy_group=🇸🇬 狮城节点`select`(新加坡|坡|狮城|SG|Singapore)
-custom_proxy_group=🇰🇷 韩国节点`select`(KR|Korea|KOR|首尔|韩|韓)
-custom_proxy_group=🎥 奈飞节点`select`(NF|奈飞|解锁|Netflix|NETFLIX|Media|UNLOCK)
+custom_proxy_group=🐟 漏网之鱼`select`[]🚀 节点选择`[]♻️ 自动选择`[]DIRECT`[]🚀 手动切换
 ;设置分组标志位
 
 enable_rule_generator=true
