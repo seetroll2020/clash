@@ -194,7 +194,7 @@ rules:
   - RULE-SET,direct,DIRECT
   - GEOIP,,DIRECT,no-resolve
   - GEOIP,CN,DIRECT,no-resolve
-  - MATCH,PROXY
+  - MATCH,🐟 漏网之鱼
 
 ;设置规则标志位
 ruleset=🎯 全球直连,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/LocalAreaNetwork.list
