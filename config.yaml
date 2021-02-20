@@ -48,10 +48,10 @@
   - 223.5.5.5
   - 180.76.76.76
   - https://rubyfish.cn/dns-quer
- fallback:
-  - https://cloudflare-dns.com/dns-query
-  - tls://1.0.0.1:853
-  - https://dns.google/dns-query#
+#  fallback:
+#  - https://cloudflare-dns.com/dns-query
+#  - tls://1.0.0.1:853
+#  - https://dns.google/dns-query#
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
   fake-ip-filter:
