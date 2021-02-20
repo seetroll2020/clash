@@ -84,7 +84,7 @@ tun:
 proxy-providers:
   CNIX:
     type: http
-    url: "https://sub.fnf.xyz/link/3fFVZWB5qSArBT7a?sub=3&extend=1"
+    url: ""
     interval: 7200
     path: ./CNIX.yaml
 
