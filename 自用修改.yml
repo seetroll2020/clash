@@ -1,7 +1,7 @@
 proxy-providers:
   CNIX:
     type: http
-    url: "https://sub.fnf.xyz/link/3fFVZWB5qSArBT7a?clash=1"
+    url: ""
     interval: 7200
     path: ./provider1.yaml
     health-check:
