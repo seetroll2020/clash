@@ -29,6 +29,9 @@ socks-port: 7891
 # Linux 的透明代理端口（适用于 TProxy TCP 和 TProxy UDP 流量)
 # tproxy-port: 7893
 
+# HTTP(S) and SOCKS5 server on the same port
+# mixed-port: 7890
+
 # 本地 SOCKS5/HTTP(S) 服务验证
 # authentication:
 #  - "user1:pass1"
@@ -87,6 +90,8 @@ profile:
   # set false If you don't want this behavior
   # when two different configurations have groups with the same name, the selected values are shared
   store-selected: false
+  # open tracing exporter API
+  tracing: true
 
 # DNS 服务器配置(可选；若不配置，程序内置的 DNS 服务会被关闭)
 dns:
@@ -216,7 +221,7 @@ dns:
   #
   # 采取以上逻辑进行域名解析是为了对抗 DNS 投毒攻击。
   fallback-filter:
-    geoip: false
+    geoip: true
     ipcidr:
       - 240.0.0.0/4
       - 0.0.0.0/32
