@@ -1,6 +1,15 @@
-#---------------------------------------------------#
-## 配置文件需要放置在 $HOME/.config/clash/config.yaml
-##
+proxy-providers:
+  CNIX:
+    type: http
+    url: ""
+    interval: 7200
+    path: ./provider1.yaml
+    health-check:
+      enable: true
+      interval: 600
+      # lazy: true
+      url: http://www.gstatic.com/generate_204
+
 ## 如果您不知道如何操作，请参阅 SS-Rule-Snippet 的 Wiki：
 ## https://github.com/Hackl0us/SS-Rule-Snippet/wiki/clash(X)
 
@@ -42,12 +51,19 @@ mode: rule
 # 5 个级别：silent / info / warning / error / debug。级别越高日志输出量越大，越倾向于调试，若需要请自行开启。
 log-level: silent
 
+# When set to false, resolver won't translate hostnames to IPv6 addresses
+ipv6: false
+
 # clash 的 RESTful API 监听地址
 external-controller: 127.0.0.1:9090
 
 # 存放配置文件的相对路径，或存放网页静态资源的绝对路径
 # Clash core 将会将其部署在 http://{{external-controller}}/ui
 # external-ui: folder
+
+# 实验性功能
+experimental:
+  ignore-resolve-fail: true # 忽略 DNS 解析失败，默认值为 true
 
 # RESTful API 的口令 (可选)
 # 通过 HTTP 头中 Authorization: Bearer ${secret} 参数来验证口令
@@ -66,6 +82,12 @@ hosts:
 # '.dev': 127.0.0.1
 # 'alpha.clash.dev': '::1'
 
+profile:
+  # Store the `select` results in $HOME/.config/clash/.cache
+  # set false If you don't want this behavior
+  # when two different configurations have groups with the same name, the selected values are shared
+  store-selected: false
+
 # DNS 服务器配置(可选；若不配置，程序内置的 DNS 服务会被关闭)
 dns:
   enable: true
@@ -76,8 +98,9 @@ dns:
   # 仅填写 DNS 服务器的 IP 地址
   default-nameserver:
     - 223.5.5.5
+    - 1.1.1.1
     - 114.114.114.114
-  enhanced-mode: fake-ip # 或 redir-host
+  enhanced-mode: redir-host # 或 fake-ip
   fake-ip-range: 198.18.0.1/16 # Fake IP 地址池 (CIDR 形式)
   # use-hosts: true # 查询 hosts 并返回 IP 记录
 
@@ -172,6 +195,10 @@ dns:
   nameserver:
     - https://doh.pub/dns-query
     - https://dns.alidns.com/dns-query
+    - 114.114.114.114 # default value
+    - 8.8.8.8 # default value
+    - tls://dns.rubyfish.cn:853 # DNS over TLS
+    - https://1.1.1.1/dns-query # DNS over HTTPS
 
   # 当 fallback 参数被配置时, DNS 请求将同时发送至上方 nameserver 列表和下方 fallback 列表中配置的所有 DNS 服务器.
   # 当解析得到的 IP 地址的地理位置不是 CN 时，clash 将会选用 fallback 中 DNS 服务器的解析结果。
@@ -199,292 +226,170 @@ dns:
     #   - '+.youtube.com'
 
 tun:
-  enable: false #如果需要启用 TUN 模式，请设置为 true
-  stack: system # 或 gvisor
+  enable: true # 如果需要启用 TUN 模式，请设置为 true
+  stack: gvisor # 或system
   macOS-auto-route: true
-  macOS-auto-detect-interface: true
+  macOS-auto-detect-interface: true   # 自动检测出口网卡
   dns-hijack:
     - tcp://8.8.8.8:53
     - tcp://8.8.4.4:53
 
-proxies:
-  # shadowsocks
-  # 支持加密方式：
-  #   aes-128-gcm aes-192-gcm aes-256-gcm
-  #   aes-128-cfb aes-192-cfb aes-256-cfb
-  #   aes-128-ctr aes-192-ctr aes-256-ctr
-  #   rc4-md5 chacha20 chacha20-ietf xchacha20
-  #   chacha20-ietf-poly1305 xchacha20-ietf-poly1305
-
-  - name: "ss1"
-    type: ss
-    server: server
-    port: 443
-    cipher: chacha20-ietf-poly1305
-    password: "password"
-    # udp: true
-
-  - name: "ss2"
-    type: ss
-    server: server
-    port: 443
-    cipher: AEAD_CHACHA20_POLY1305
-    password: "password"
-    plugin: obfs
-    plugin-opts:
-      mode: tls # 混淆模式，可以选择 http 或 tls
-      host: bing.com # 混淆域名，需要和服务器配置保持一致
-
-  - name: "ss3"
-    type: ss
-    server: server
-    port: 443
-    cipher: AEAD_CHACHA20_POLY1305
-    password: "password"
-    plugin: v2ray-plugin
-    plugin-opts:
-      mode: websocket # 暂时不支持 QUIC 协议
-      # tls: true # wss
-      # skip-cert-verify: true
-      # host: bing.com
-      # path: "/"
-      # headers:
-      #   custom: value
-
-  # vmess
-  # 支持加密方式：auto / aes-128-gcm / chacha20-poly1305 / none
-  - name: "vmess"
-    type: vmess
-    server: server
-    port: 443
-    uuid: uuid
-    alterId: 32
-    cipher: auto
-    # udp: true
-    # tls: true
-    # skip-cert-verify: true
-    # servername: example.com # 优先级高于 wss host
-    # network: ws
-    # ws-path: /path
-    # ws-headers:
-    #   Host: v2ray.com
-
-  - name: "vmess-http"
-    type: vmess
-    server: server
-    port: 443
-    uuid: uuid
-    alterId: 32
-    cipher: auto
-    # udp: true
-    # network: http
-    # http-opts:
-    #   # method: "GET"
-    #   # path:
-    #   #   - '/'
-    #   #   - '/video'
-    #   # headers:
-    #   #   Connection:
-    #   #     - keep-alive
-
-  # socks5
-  - name: "socks"
-    type: socks5
-    server: server
-    port: 443
-    # username: username
-    # password: password
-    # tls: true
-    # skip-cert-verify: true
-    # udp: true
-
-  # http
-  - name: "http"
-    type: http
-    server: server
-    port: 443
-    # username: username
-    # password: password
-    # tls: true # https
-    # skip-cert-verify: true
-
-  # snell (注意：暂时不支持 UDP 转发)
-  - name: "snell"
-    type: snell
-    server: server
-    port: 44046
-    psk: yourpsk
-    # obfs-opts:
-    # mode: http # 或 tls
-    # host: bing.com
-
-  # Trojan
-  - name: "trojan"
-    type: trojan
-    server: server
-    port: 443
-    password: yourpsk
-    # udp: true
-    # sni: example.com # 服务名称
-    # alpn:
-    #   - h2
-    #   - http/1.1
-    # skip-cert-verify: true
-
-  # ShadowsocksR
-  # 支持的加密方式: SS 中支持的所有流加密方式
-  # 支持的混淆方式:
-  #   plain http_simple http_post
-  #   random_head tls1.2_ticket_auth tls1.2_ticket_fastauth
-  # 支持的协议:
-  #   origin auth_sha1_v4 auth_aes128_md5
-  #   auth_aes128_sha1 auth_chain_a auth_chain_b
-  - name: "ssr"
-    type: ssr
-    server: server
-    port: 443
-    cipher: chacha20-ietf
-    password: "password"
-    obfs: tls1.2_ticket_auth
-    protocol: auth_sha1_v4
-    # obfs-param: domain.tld
-    # protocol-param: "#"
-    # udp: true
-
 proxy-groups:
-  # 代理的转发链, 在 proxies 中不应该包含 relay. 不支持 UDP.
-  # 流量: clash <-> http <-> vmess <-> ss1 <-> ss2 <-> 互联网
-  - name: "relay"
-    type: relay
-    proxies:
-      - http
-      - vmess
-      - ss1
-      - ss2
-
-  # url-test 可以自动选择与指定 URL 测速后，延迟最短的服务器
-  - name: "auto"
-    type: url-test
-    proxies:
-      - ss1
-      - ss2
-      - vmess1
-    url: 'http://www.gstatic.com/generate_204'
-    interval: 300
-
-  # fallback 可以尽量按照用户书写的服务器顺序，在确保服务器可用的情况下，自动选择服务器
-  - name: "fallback-auto"
-    type: fallback
-    proxies:
-      - ss1
-      - ss2
-      - vmess1
-    url: 'http://www.gstatic.com/generate_204'
-    interval: 300
-
-  # load-balance 可以使相同 eTLD 请求在同一条代理线路上
-  - name: "load-balance"
-    type: load-balance
-    proxies:
-      - ss1
-      - ss2
-      - vmess1
-    url: 'http://www.gstatic.com/generate_204'
-    interval: 300
-
-  # select 用来允许用户手动选择 代理服务器 或 服务器组
-  # 您也可以使用 RESTful API 去切换服务器，这种方式推荐在 GUI 中使用
-  - name: Proxy
+  - name: 🚀 节点选择
     type: select
     proxies:
-      - ss1
-      - ss2
-      - vmess1
-      - auto
-
-  - name: UseProvider
-    type: select
+      - ♻️ 自动选择
+      - DIRECT    
     use:
-      - provider1
+      - CNIX
+
+  - name: ♻️ 自动选择
+    type: url-test
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    tolerance: 50
+    use:
+      - CNIX
+
+  - name: 🎯 全球直连
+    type: select
     proxies:
-      - Proxy
+      - DIRECT
+      - 🚀 节点选择
+      - ♻️ 自动选择
+
+  - name: 🛑 全球拦截
+    type: select
+    proxies:
+      - REJECT
       - DIRECT
 
-proxy-providers:
-  provider1:
-    type: http
-    url: "url"
-    interval: 3600
-    path: ./provider1.yaml
-    health-check:
-      enable: true
-      interval: 600
-      url: http://www.gstatic.com/generate_204
-  test:
-    type: file
-    path: /test.yaml
-    health-check:
-      enable: true
-      interval: 36000
-      url: http://www.gstatic.com/generate_204
+  - name: 🐟 漏网之鱼
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - 🎯 全球直连
+      - ♻️ 自动选择
+    use:
+      - CNIX
+
+  - name: PROXY
+    type: select
+    proxies:
+      - 🚀 节点选择
+      - DIRECT
+
+
 
 rule-providers:
-  apple-proxy:
+  Advertising:
     type: http
     behavior: classical
-    url: "https://cdn.jsdelivr.net/gh/Hackl0us/SS-Rule-Snippet@master/Rulesets/Clash/Basic/Apple-proxy.yaml"
-    path: ./ruleset/Apple-proxy.yaml
-    interval: 3600
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/release/rule/Clash/Advertising/Advertising.yaml"
+    path: ./ruleset/Advertising.yaml
+    interval: 36000
 
-  apple-direct:
+  GlobalMedia:
     type: http
     behavior: classical
-    url: "https://cdn.jsdelivr.net/gh/Hackl0us/SS-Rule-Snippet@master/Rulesets/Clash/Basic/Apple-direct.yaml"
-    path: ./ruleset/Apple-direct.yaml
-    interval: 3600
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/release/rule/Clash/GlobalMedia/GlobalMedia.yaml"
+    path: ./ruleset/GlobalMedia.yaml
+    interval: 36000
 
-  cn:
+  Apple:
     type: http
     behavior: classical
-    url: "https://cdn.jsdelivr.net/gh/Hackl0us/SS-Rule-Snippet@master/Rulesets/Clash/Basic/CN.yaml"
-    path: ./ruleset/CN.yaml
-    interval: 3600
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/release/rule/Clash/Apple/Apple.yaml"
+    path: ./ruleset/Apple.yaml
+    interval: 36000
 
-  ad-keyword:
+  Google:
     type: http
     behavior: classical
-    url: "https://cdn.jsdelivr.net/gh/Hackl0us/SS-Rule-Snippet@master/Rulesets/Clash/Basic/common-ad-keyword.yaml"
-    path: ./ruleset/common-ad-keyword.yaml
-    interval: 3600
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/release/rule/Clash/Google/Google.yaml"
+    path: ./ruleset/Google.yaml
+    interval: 36000
 
-  foreign:
+  Proxy:
     type: http
     behavior: classical
-    url: "https://cdn.jsdelivr.net/gh/Hackl0us/SS-Rule-Snippet@master/Rulesets/Clash/Basic/foreign.yaml"
-    path: ./ruleset/foreign.yaml
-    interval: 3600
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/release/rule/Clash/Proxy/Proxy.yaml"
+    path: ./ruleset/Proxy.yaml
+    interval: 36000
 
-  telegram:
+  direct:
     type: http
-    behavior: classical
-    url: "https://cdn.jsdelivr.net/gh/Hackl0us/SS-Rule-Snippet@master/Rulesets/Clash/App/social/Telegram.yaml"
-    path: ./ruleset/Telegram.yaml
-    interval: 3600
+    behavior: domain
+    url: "https://raw.githubusercontent.com/Loyalsoldier/clash-rules/release/direct.txt"
+    path: ./ruleset/direct.yaml
+    interval: 36000
 
-  lan:
+  ChinaIPs_IP:
+    type: http
+    behavior: ipcidr
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ChinaIPs/ChinaIPs_IP.yaml"
+    path: ./ruleset/ChinaIPs_IP.yaml
+    interval: 36000
+
+  China:
     type: http
     behavior: classical
-    url: "https://cdn.jsdelivr.net/gh/Hackl0us/SS-Rule-Snippet@master/Rulesets/Clash/Basic/LAN.yaml"
-    path: ./ruleset/LAN.yaml
-    interval: 3600
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/release/rule/Clash/China/China.yaml"
+    path: ./ruleset/China.yaml
+    interval: 36000
+
+  ChinaMedia:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/release/rule/Clash/ChinaMedia/ChinaMedia.yaml"
+    path: ./ruleset/ChinaMedia.yaml
+    interval: 36000
+
+  Lan:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/release/rule/Clash/Lan/Lan.yaml"
+    path: ./ruleset/Lan.yaml
+    interval: 36000
 
 rules:
-  - RULE-SET,apple-proxy,Proxy
-  - RULE-SET,apple-direct,DIRECT
-  - RULE-SET,cn,DIRECT
-  - RULE-SET,ad-keyword,REJECT
-  - RULE-SET,foreign,Proxy
-  - RULE-SET,telegram,Proxy
-  - RULE-SET,lan,DIRECT
-  - GEOIP,CN,DIRECT
-  - MATCH,Proxy
+  - PROCESS-NAME,clash,DIRECT
+  - PROCESS-NAME,clash-darwin,DIRECT
+  - PROCESS-NAME,clash-windows,DIRECT
+  - PROCESS-NAME,clash-linux,DIRECT
+  - PROCESS-NAME,surge,DIRECT
+  - PROCESS-NAME,surge%203,DIRECT
+  - PROCESS-NAME,v2ray,DIRECT
+  - PROCESS-NAME,xray,DIRECT
+  - PROCESS-NAME,ss-local,DIRECT
+  - PROCESS-NAME,privoxy,DIRECT
+  - PROCESS-NAME,trojan,DIRECT
+  - PROCESS-NAME,trojan-go,DIRECT
+  - PROCESS-NAME,naive,DIRECT
+  - PROCESS-NAME,Thunder,DIRECT
+  - PROCESS-NAME,thunder.exe,DIRECT
+  - PROCESS-NAME,DownloadService,DIRECT
+  - PROCESS-NAME,qbittorrent,DIRECT
+  - PROCESS-NAME,qBittorrent,DIRECT
+  - PROCESS-NAME,Transmission,DIRECT
+  - PROCESS-NAME,fdm,DIRECT
+  - PROCESS-NAME,aria2c,DIRECT
+  - PROCESS-NAME,Folx,DIRECT
+  - PROCESS-NAME,NetTransport,DIRECT
+  - PROCESS-NAME,uTorrent,DIRECT
+  - PROCESS-NAME,WebTorrent,DIRECT
+  - DOMAIN,clash.razord.top,DIRECT
+  - DOMAIN,yacd.haishan.me,DIRECT
+  - RULE-SET,Advertising,REJECT
+  - DOMAIN,www.icloud.com,PROXY
+  - DOMAIN-SUFFIX,icloud-content.com,PROXY
+  - RULE-SET,GlobalMedia,PROXY
+  - RULE-SET,Apple,PROXY
+  - RULE-SET,Google,PROXY
+  - RULE-SET,Proxy,PROXY
+  - RULE-SET,China,DIRECT
+  - RULE-SET,ChinaMedia,DIRECT
+  - RULE-SET,direct,DIRECT
+  - GEOIP,,DIRECT,no-resolve
+  - GEOIP,CN,DIRECT,no-resolve
+  - MATCH,🐟 漏网之鱼
