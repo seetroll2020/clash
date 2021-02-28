@@ -294,11 +294,39 @@ rule-providers:
     path: ./ruleset/Advertising.yaml
     interval: 36000
 
+  Hijacking:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/release/rule/Clash/Hijacking/Hijacking.yaml"
+    path: ./ruleset/Hijacking.yaml
+    interval: 36000
+
+  WhiteList:
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/release/rule/Clash/WhiteList/WhiteList.yaml"
+    path: ./ruleset/WhiteList.yaml
+    interval: 36000
+ 
   GlobalMedia:
     type: http
     behavior: classical
     url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/release/rule/Clash/GlobalMedia/GlobalMedia.yaml"
     path: ./ruleset/GlobalMedia.yaml
+    interval: 36000
+
+  YouTube:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/release/rule/Clash/YouTube/YouTube.yaml"
+    path: ./ruleset/YouTube.yaml
+    interval: 36000
+
+  Telegram:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/release/rule/Clash/Telegram/Telegram.yaml"
+    path: ./ruleset/Telegram.yaml
     interval: 36000
 
   Apple:
@@ -389,12 +417,17 @@ rules:
   - DOMAIN,www.icloud.com,PROXY
   - DOMAIN-SUFFIX,icloud-content.com,PROXY
   - RULE-SET,GlobalMedia,PROXY
+  - RULE-SET,Hijacking,REJECT
+  - RULE-SET,WhiteList,DIRECT
+  - RULE-SET,YouTube,PROXY
+  - RULE-SET,Telegram,PROXY
   - RULE-SET,Apple,PROXY
   - RULE-SET,Google,PROXY
   - RULE-SET,Proxy,PROXY
   - RULE-SET,China,DIRECT
   - RULE-SET,ChinaMedia,DIRECT
   - RULE-SET,direct,DIRECT
+  - RULE-SET,Lan,DIRECT
 # - GEOIP,,DIRECT,no-resolve
   - GEOIP,CN,DIRECT,no-resolve
   - MATCH,🐟 漏网之鱼
