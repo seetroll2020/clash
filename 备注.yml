@@ -395,6 +395,6 @@ rules:
   - RULE-SET,China,DIRECT
   - RULE-SET,ChinaMedia,DIRECT
   - RULE-SET,direct,DIRECT
-  - GEOIP,,DIRECT,no-resolve
+# - GEOIP,,DIRECT,no-resolve
   - GEOIP,CN,DIRECT,no-resolve
   - MATCH,🐟 漏网之鱼
