@@ -278,7 +278,7 @@ proxy-groups:
     use:
       - CNIX
 
-  - name: PROXY
+  - name: ⛳️ PROXY
     type: select
     proxies:
       - 🚀 节点选择
@@ -414,16 +414,16 @@ rules:
   - DOMAIN,clash.razord.top,DIRECT
   - DOMAIN,yacd.haishan.me,DIRECT
   - RULE-SET,Advertising,REJECT
-  - DOMAIN,www.icloud.com,PROXY
-  - DOMAIN-SUFFIX,icloud-content.com,PROXY
-  - RULE-SET,GlobalMedia,PROXY
+  - DOMAIN,www.icloud.com,⛳️ PROXY
+  - DOMAIN-SUFFIX,icloud-content.com,⛳️ PROXY
+  - RULE-SET,GlobalMedia,⛳️ PROXY
   - RULE-SET,Hijacking,REJECT
   - RULE-SET,WhiteList,DIRECT
-  - RULE-SET,YouTube,PROXY
-  - RULE-SET,Telegram,PROXY
-  - RULE-SET,Apple,PROXY
-  - RULE-SET,Google,PROXY
-  - RULE-SET,Proxy,PROXY
+  - RULE-SET,YouTube,⛳️ PROXY
+  - RULE-SET,Telegram,⛳️ PROXY
+  - RULE-SET,Apple,⛳️ PROXY
+  - RULE-SET,Google,⛳️ PROXY
+  - RULE-SET,Proxy,⛳️ PROXY
   - RULE-SET,China,DIRECT
   - RULE-SET,ChinaMedia,DIRECT
   - RULE-SET,direct,DIRECT
